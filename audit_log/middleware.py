@@ -24,6 +24,12 @@ def _enable_audit_log_managers(instance):
 
 
 class UserLoggingMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
     def process_request(self, request):
         if settings.DISABLE_AUDIT_LOG:
             return
@@ -93,6 +99,11 @@ class JWTAuthMiddleware(object):
     Fixes issue https://github.com/GetBlimp/django-rest-framework-jwt/issues/45
     """
 
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
 
     def get_user_jwt(self, request):
         from rest_framework.request import Request
